@@ -1,4 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server');
+const { default: axios } = require('axios');
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -8,15 +9,52 @@ const { ApolloServer, gql } = require('apollo-server');
 const typeDefs = gql`
   type Book {
     title: String
-    author: String
+    author: Person
   }
   type Car {
     mark: String
     yearMade: Int
   }
+  type Person {
+    name: String
+    age: Int
+  }
+  type Address {
+    street: String
+    suite: String
+    city: String
+    zipcode: String
+    geo: Geo
+  }
+
+  type Geo {
+    lat: String
+    lng: String
+  }
+
+  type Company {
+    name: String
+    catchPhrase: String
+    bs: String
+  }
+
+  type getUsers {
+    id: ID
+    name: String
+    username: String
+    email: String
+    address: Address
+    phone: String
+    website: String
+    geo: Geo
+    company: Company
+  }
+
   type Query {
     books: [Book]
     cars: [Car]
+    persons: [Person]
+    getUsers: [getUsers]
   }
 `;
 
@@ -24,11 +62,11 @@ const typeDefs = gql`
 const books = [
   {
     title: 'The Awakening',
-    author: 'Kate Chopin',
+    author: { name: 'JImmy', age: 20 },
   },
   {
     title: 'City of Glass',
-    author: 'Paul Auster',
+    author: { name: 'Paul Auster', age: 40 },
   },
 ];
 const cars = [
@@ -41,12 +79,35 @@ const cars = [
     yearMade: 1909,
   },
 ];
+const persons = [
+  {
+    name: 'Vanessa',
+    age: 22,
+  },
+  {
+    name: 'Melody',
+    age: 29,
+  },
+];
 
 // info Define a resolver
 const resolvers = {
   Query: {
     books: () => books,
     cars: () => cars,
+    persons: () => persons,
+    getUsers: async () => {
+      try {
+        const users = await axios.get(
+          'https://jsonplaceholder.typicode.com/users'
+        );
+        return users.data.map((user) => {
+          return user;
+        });
+      } catch (error) {
+        throw error;
+      }
+    },
   },
 };
 
