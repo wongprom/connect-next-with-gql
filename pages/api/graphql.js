@@ -59,11 +59,12 @@ const typeDefs = gql`
 
   type Mutation {
     addCar(mark: String, yearMade: Int): Car
+    addBook(title: String, name: String, age: Int): Book
   }
 `;
 
 // info Define your data set
-const books = [
+let books = [
   {
     title: 'The Awakening',
     author: { name: 'JImmy', age: 20 },
@@ -119,11 +120,22 @@ const resolvers = {
     addCar: (_, { mark, yearMade }, { dataSources }) => {
       const newCar = {
         mark,
-        yearMade,
       };
       cars = [...cars, newCar];
 
       return newCar;
+    },
+    addBook: (_, { title, name, age }, { dataSources }) => {
+      const newBook = {
+        title,
+        author: {
+          name,
+          age,
+        },
+      };
+      books = [...books, newBook];
+
+      return newBook;
     },
   },
 };
