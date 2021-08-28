@@ -56,6 +56,10 @@ const typeDefs = gql`
     persons: [Person]
     getUsers: [getUsers]
   }
+
+  type Mutation {
+    addCar(mark: String, yearMade: Int): Car
+  }
 `;
 
 // info Define your data set
@@ -69,7 +73,8 @@ const books = [
     author: { name: 'Paul Auster', age: 40 },
   },
 ];
-const cars = [
+
+let cars = [
   {
     mark: 'Volvo',
     yearMade: 1969,
@@ -79,6 +84,7 @@ const cars = [
     yearMade: 1909,
   },
 ];
+
 const persons = [
   {
     name: 'Vanessa',
@@ -107,6 +113,17 @@ const resolvers = {
       } catch (error) {
         throw error;
       }
+    },
+  },
+  Mutation: {
+    addCar: (_, { mark, yearMade }, { dataSources }) => {
+      const newCar = {
+        mark,
+        yearMade,
+      };
+      cars = [...cars, newCar];
+
+      return newCar;
     },
   },
 };

@@ -6,6 +6,12 @@ Connecting Graphql server to a create-next-project
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
+### Start server with nodemon from ROOT
+
+```js
+nodemon pages/api/graphql.js
+```
+
 ### Prerequisites
 
 What things you need to install the software and how to install them
