@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server');
+import { ApolloServer, gql } from 'apollo-server-micro';
 const { default: axios } = require('axios');
 
 // A schema is a collection of type definitions (hence "typeDefs")
@@ -142,6 +142,12 @@ const resolvers = {
 
 // info Create an instance of ApolloServer
 const server = new ApolloServer({ typeDefs, resolvers });
-server.listen().then(({ url }) => {
-  console.log(`🚀  Server ready at ${url}`);
-});
+// server.listen().then(({ url }) => {
+//   console.log(`🚀  Server ready at ${url}`);
+// });
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+export default server.createHandler({ path: '/api/graphql' });

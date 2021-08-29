@@ -6,18 +6,18 @@ Connecting Graphql server to a create-next-project
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### Start server with nodemon from ROOT
+### Start project locally
 
 ```js
-nodemon pages/api/graphql.js
+yarn run dev
 ```
 
-### Prerequisites
+### ℹ️ Info
 
-What things you need to install the software and how to install them
+When installing `apollo-server-micro`, use version `@2.23.0`
 
 ```
-Give examples
+yarn add apollo-server-micro@2.23.0
 ```
 
 ### Installing

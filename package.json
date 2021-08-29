@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "apollo-server": "^3.3.0",
+    "apollo-server-micro": "2.23.0",
     "axios": "^0.21.1",
     "graphql": "^15.5.1",
     "next": "latest",
