@@ -23,6 +23,12 @@ const GET_USERS = gql`
   query GetUsers {
     getUsers {
       name
+      username
+      email
+      company {
+        name
+        catchPhrase
+      }
     }
   }
 `;
@@ -48,24 +54,46 @@ export default function Home() {
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {dataBooks?.books.map(({ title, author: { name, age } }) => {
-        return (
-          <div className=" flex flex-col  p-20 bg-blue-100 border border-black mb-4 w-full ">
-            <h3 className="text-blue-400 mb-4 text-lg font-bold flex-grow">
-              Book Title: {title}
-            </h3>
 
-            <div className="flex flex-col bg-white p-6 rounded-lg shadow-xl ">
-              <h2 className="mb-2 font-bold text-2xl text-gray-600">
-                Auther Info
-              </h2>
-              <p className="text-gray-500">Name: {name}</p>
-              <p className="text-gray-500">Age: {age}</p>
+      <main>
+        <h2 className="text-2xl">Books, hard coded values</h2>
+        {dataBooks?.books.map(({ title, author: { name, age } }) => {
+          return (
+            <div className=" flex flex-col  p-20 bg-blue-100 border border-black mb-4 w-full ">
+              <h3 className="text-blue-400 mb-4 text-lg font-bold flex-grow">
+                Book Title: {title}
+              </h3>
+
+              <div className="flex flex-col bg-white p-6 rounded-lg shadow-xl ">
+                <h2 className="mb-2 font-bold text-2xl text-gray-600">
+                  Auther Info
+                </h2>
+                <p className="text-gray-500">Name: {name}</p>
+                <p className="text-gray-500">Age: {age}</p>
+              </div>
             </div>
-          </div>
-        );
-      })}
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center"></main>
+          );
+        })}
+        <h2 className="text-2xl">Users, from placeholder api</h2>
+
+        {dataUsers?.getUsers.map(
+          ({ name, email, username, company: { name: companyName } }) => {
+            return (
+              <div className=" flex flex-col  p-20 bg-blue-100 border border-black mb-4 w-full ">
+                <div className="flex flex-col bg-white p-6 rounded-lg shadow-xl ">
+                  <h2 className="mb-2 font-bold text-2xl text-gray-600">
+                    User info
+                  </h2>
+                  <p className="text-gray-500">Name:{name} </p>
+                  <p className="text-gray-500">username:{username} </p>
+                  <p className="text-gray-500">Email:{email} </p>
+                  <p className="text-gray-500">Company name:{companyName} </p>
+                </div>
+              </div>
+            );
+          }
+        )}
+      </main>
 
       <footer className="flex items-center justify-center w-full h-24 border-t">
         <a
