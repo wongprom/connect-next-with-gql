@@ -1,5 +1,5 @@
 import { ApolloServer, gql } from 'apollo-server-micro';
-const { default: axios } = require('axios');
+import axios from 'axios';
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -145,6 +145,8 @@ const server = new ApolloServer({ typeDefs, resolvers });
 // server.listen().then(({ url }) => {
 //   console.log(`🚀  Server ready at ${url}`);
 // });
+
+// https://spin.atomicobject.com/2020/03/29/next-js-graphql-api/
 export const config = {
   api: {
     bodyParser: false,

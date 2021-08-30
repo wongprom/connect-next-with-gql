@@ -1,6 +1,43 @@
-import Head from 'next/head'
+import Head from 'next/head';
+
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  useQuery,
+  gql,
+} from '@apollo/client';
+
+const GET_BOOKS = gql`
+  query GetBooks {
+    books {
+      title
+    }
+  }
+`;
+const GET_USERS = gql`
+  query GetUsers {
+    getUsers {
+      name
+    }
+  }
+`;
 
 export default function Home() {
+  // Make multible requests
+  const {
+    loading: loadingBooks,
+    error: errorBooks,
+    data: dataBooks,
+  } = useQuery(GET_BOOKS);
+  console.log('🚀 ~ file: index.js ~ line 28 ~ Home ~ ataBooks', dataBooks);
+  const {
+    loading: loadingUsers,
+    error: errorUsers,
+    data: dataUsers,
+  } = useQuery(GET_USERS);
+  console.log('🚀 ~ file: index.js ~ line 30 ~ Home ~ dataUsers', dataUsers);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <Head>
@@ -78,5 +115,5 @@ export default function Home() {
         </a>
       </footer>
     </div>
-  )
+  );
 }
