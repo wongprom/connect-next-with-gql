@@ -6,10 +6,14 @@ import {
   ApolloProvider,
   useQuery,
   gql,
+  createHttpLink,
 } from '@apollo/client';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:3000/api/graphql',
+  ssrMode: true,
+  link: createHttpLink({
+    uri: 'http://localhost:3000/api/graphql',
+  }),
   cache: new InMemoryCache(),
 });
 

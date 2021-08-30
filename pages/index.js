@@ -7,6 +7,7 @@ import {
   useQuery,
   gql,
 } from '@apollo/client';
+import { initializeApollo } from '../lib/apolloClient';
 
 const GET_BOOKS = gql`
   query GetBooks {
@@ -33,20 +34,19 @@ const GET_USERS = gql`
   }
 `;
 
-export default function Home() {
-  // Make multible requests
-  const {
-    loading: loadingBooks,
-    error: errorBooks,
-    data: dataBooks,
-  } = useQuery(GET_BOOKS);
-  console.log('🚀 ~ file: index.js ~ line 28 ~ Home ~ ataBooks', dataBooks);
-  const {
-    loading: loadingUsers,
-    error: errorUsers,
-    data: dataUsers,
-  } = useQuery(GET_USERS);
-  console.log('🚀 ~ file: index.js ~ line 30 ~ Home ~ dataUsers', dataUsers);
+export default function Home({ serverSideDataBooks, serverSideDataUsers }) {
+  // !Make multible client side query requests
+  // const {
+  //   loading: loadingBooks,
+  //   error: errorBooks,
+  //   data: dataBooks,
+  // } = useQuery(GET_BOOKS);
+
+  // const {
+  //   loading: loadingUsers,
+  //   error: errorUsers,
+  //   data: dataUsers,
+  // } = useQuery(GET_USERS);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6">
@@ -56,10 +56,13 @@ export default function Home() {
       </Head>
 
       <main>
-        <h2 className="text-2xl">Books, hard coded values</h2>
-        {dataBooks?.books.map(({ title, author: { name, age } }) => {
+        <h2 className="text-2xl text-center mb-10">Books, hard coded values</h2>
+        {serverSideDataBooks?.books.map(({ title, author: { name, age } }) => {
           return (
-            <div className=" flex flex-col  p-20 bg-blue-100 border border-black mb-4 w-full ">
+            <div
+              key={title}
+              className="flex flex-col  p-20 bg-blue-100 border border-black mb-4 w-full "
+            >
               <h3 className="text-blue-400 mb-4 text-lg font-bold flex-grow">
                 Book Title: {title}
               </h3>
@@ -74,12 +77,17 @@ export default function Home() {
             </div>
           );
         })}
-        <h2 className="text-2xl">Users, from placeholder api</h2>
+        <h2 className="text-2xl text-center mb-10">
+          Users, from placeholder api
+        </h2>
 
-        {dataUsers?.getUsers.map(
+        {serverSideDataUsers?.getUsers.map(
           ({ name, email, username, company: { name: companyName } }) => {
             return (
-              <div className=" flex flex-col  p-20 bg-blue-100 border border-black mb-4 w-full ">
+              <div
+                key={email}
+                className=" flex flex-col  p-20 bg-blue-100 border border-black mb-4 w-full "
+              >
                 <div className="flex flex-col bg-white p-6 rounded-lg shadow-xl ">
                   <h2 className="mb-2 font-bold text-2xl text-gray-600">
                     User info
@@ -108,4 +116,25 @@ export default function Home() {
       </footer>
     </div>
   );
+}
+export async function getServerSideProps(context) {
+  const apolloClient = initializeApollo();
+
+  const serverSideDataBooks = await apolloClient.query({
+    query: GET_BOOKS,
+  });
+  const serverSideDataUsers = await apolloClient.query({
+    query: GET_USERS,
+  });
+  console.log(
+    '🚀 ~ file: index.js ~ line 132 ~ getServerSideProps ~ serverSideDataBooks',
+    serverSideDataBooks
+  );
+
+  return {
+    props: {
+      serverSideDataBooks: serverSideDataBooks.data,
+      serverSideDataUsers: serverSideDataUsers.data,
+    },
+  };
 }
