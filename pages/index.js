@@ -6,8 +6,10 @@ import {
   ApolloProvider,
   useQuery,
   gql,
+  useMutation,
 } from '@apollo/client';
 import { initializeApollo } from '../lib/apolloClient';
+import { useState } from 'react';
 
 const GET_BOOKS = gql`
   query GetBooks {
@@ -34,6 +36,18 @@ const GET_USERS = gql`
   }
 `;
 
+const UPDATE_BOOK = gql`
+  mutation AddBook($title: String, $name: String, $age: Int) {
+    addBook(title: $title, name: $name, age: $age) {
+      title
+      author {
+        name
+        age
+      }
+    }
+  }
+`;
+
 export default function Home({ serverSideDataBooks, serverSideDataUsers }) {
   // !Make multible client side query requests
   // const {
@@ -47,6 +61,35 @@ export default function Home({ serverSideDataBooks, serverSideDataUsers }) {
   //   error: errorUsers,
   //   data: dataUsers,
   // } = useQuery(GET_USERS);
+  const [updateBook] = useMutation(UPDATE_BOOK);
+
+  const [inputTitle, setInputTitle] = useState('');
+  const [inputName, setInputName] = useState('');
+  const [inputAge, setInputAge] = useState('');
+
+  // const handleInputTitle = (event) => {
+  //   event.preventDefault();
+  //   setInputTitle(event.target.value);
+  // };
+  // const handleInputName = (event) => {
+  //   event.preventDefault();
+  //   setInputName(event.target.value);
+  // };
+  // const handleInputAge = (event) => {
+  //   event.preventDefault();
+  //   setInputAge(event.target.value);
+  // };
+
+  const handlerAddBook = (event) => {
+    event.preventDefault();
+    updateBook({
+      variables: {
+        title: inputTitle,
+        name: inputName,
+        age: Number(inputAge),
+      },
+    });
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6">
@@ -57,6 +100,32 @@ export default function Home({ serverSideDataBooks, serverSideDataUsers }) {
 
       <main>
         <h2 className="text-2xl text-center mb-10">Books, hard coded values</h2>
+        <form>
+          <input
+            type="text"
+            value={inputTitle}
+            onChange={(event) => setInputTitle(event.target.value)}
+            placeholder="Title"
+          />
+          <input
+            type="text"
+            value={inputName}
+            onChange={(event) => setInputName(event.target.value)}
+            placeholder="Name"
+          />
+          <input
+            type="text"
+            value={inputAge}
+            onChange={(event) => setInputAge(event.target.value)}
+            placeholder="Age"
+          />
+          <button
+            className="bg-gray-300"
+            onClick={(event) => handlerAddBook(event)}
+          >
+            Mutation = basically add a new book...
+          </button>
+        </form>
         {serverSideDataBooks?.books.map(({ title, author: { name, age } }) => {
           return (
             <div
