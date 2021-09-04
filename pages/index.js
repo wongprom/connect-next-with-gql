@@ -63,6 +63,8 @@ export default function Home({ serverSideDataBooks, serverSideDataUsers }) {
   // } = useQuery(GET_USERS);
   const [updateBook] = useMutation(UPDATE_BOOK);
 
+  const [renderBooks, setRenderBooks] = useState(serverSideDataBooks);
+
   const [inputTitle, setInputTitle] = useState('');
   const [inputName, setInputName] = useState('');
   const [inputAge, setInputAge] = useState('');
@@ -88,6 +90,15 @@ export default function Home({ serverSideDataBooks, serverSideDataUsers }) {
         name: inputName,
         age: Number(inputAge),
       },
+    }).then(({ data: { addBook } }) => {
+      console.log(
+        '🚀 ~ file: index.js ~ line 98 ~ handlerAddBook ~ addBook',
+        addBook
+      );
+
+      console.log(' ==> ', renderBooks);
+
+      setRenderBooks([...renderBooks, addBook]);
     });
   };
 
@@ -120,13 +131,13 @@ export default function Home({ serverSideDataBooks, serverSideDataUsers }) {
             placeholder="Age"
           />
           <button
-            className="bg-gray-300"
+            className="rounded bg-blue-500 hover:bg-blue-700 py-2 px-4 text-white"
             onClick={(event) => handlerAddBook(event)}
           >
             Mutation = basically add a new book...
           </button>
         </form>
-        {serverSideDataBooks?.books.map(({ title, author: { name, age } }) => {
+        {renderBooks?.map(({ title, author: { name, age } }) => {
           return (
             <div
               key={title}
@@ -202,7 +213,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      serverSideDataBooks: serverSideDataBooks.data,
+      serverSideDataBooks: serverSideDataBooks.data.books,
       serverSideDataUsers: serverSideDataUsers.data,
     },
   };
