@@ -1,5 +1,9 @@
 import { ApolloServer, gql } from 'apollo-server-micro';
 import axios from 'axios';
+// import { collection, query, where, getDocs } from 'firebase/firestore';
+import db from '../../firebase';
+
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -7,6 +11,18 @@ import axios from 'axios';
 
 // info Define your GraphQL schema
 const typeDefs = gql`
+  type Bok {
+    titel: String
+    forfattare: String
+    alder: Int
+  }
+
+  type Bil {
+    marke: String
+    modell: String
+    ar: Int
+  }
+
   type Book {
     title: String
     author: Person
@@ -52,9 +68,11 @@ const typeDefs = gql`
 
   type Query {
     books: [Book]
+    bocker: [Bok]
     cars: [Car]
     persons: [Person]
     getUsers: [getUsers]
+    bilar: [Bil]
   }
 
   type Mutation {
@@ -64,17 +82,21 @@ const typeDefs = gql`
 `;
 
 // info Define your data set
-let books = [
+let bocker = [
   {
-    title: 'The Awakening',
-    author: { name: 'JImmy', age: 20 },
-  },
-  {
-    title: 'City of Glass',
-    author: { name: 'Paul Auster', age: 40 },
+    titel: 'Bok title',
+    forfattare: 'Bok författare',
+    alder: 34,
   },
 ];
 
+let bilar = [
+  {
+    marke: 'Toyota',
+    modell: 'Supra',
+    ar: 1998,
+  },
+];
 let cars = [
   {
     mark: 'Volvo',
@@ -83,6 +105,17 @@ let cars = [
   {
     mark: 'Saab',
     yearMade: 1909,
+  },
+];
+
+let books = [
+  {
+    title: 'The Awakening',
+    author: { name: 'JImmy', age: 20 },
+  },
+  {
+    title: 'City of Glass',
+    author: { name: 'Paul Auster', age: 40 },
   },
 ];
 
@@ -101,7 +134,21 @@ const persons = [
 const resolvers = {
   Query: {
     books: () => books,
-    cars: () => cars,
+    bocker: () => bocker,
+    bilar: () => bilar,
+    // cars: () => cars,
+    cars: async () => {
+      const querySnapshot = await getDocs(collection(db, 'cars'));
+      let temp = [];
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, ' => ', doc.data());
+        temp.push(doc.data());
+      });
+      console.log('temp', temp);
+      return temp;
+    },
+
     persons: () => persons,
     getUsers: async () => {
       try {
@@ -120,6 +167,7 @@ const resolvers = {
     addCar: (_, { mark, yearMade }, { dataSources }) => {
       const newCar = {
         mark,
+        yearMade,
       };
       cars = [...cars, newCar];
 

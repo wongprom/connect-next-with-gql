@@ -1,4 +1,7 @@
 import Head from 'next/head';
+import { doc, setDoc } from 'firebase/firestore';
+import db from '../firebase';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 
 import {
   ApolloClient,
@@ -9,8 +12,16 @@ import {
   useMutation,
 } from '@apollo/client';
 import { initializeApollo } from '../lib/apolloClient';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+const GET_CARS = gql`
+  query GetCars {
+    cars {
+      mark
+      yearMade
+    }
+  }
+`;
 const GET_BOOKS = gql`
   query GetBooks {
     books {
@@ -22,6 +33,25 @@ const GET_BOOKS = gql`
     }
   }
 `;
+const HAMTA_BOCKER = gql`
+  query hamtaBocker {
+    bocker {
+      titel
+      forfattare
+      alder
+    }
+  }
+`;
+const HAMTA_BILAR = gql`
+  query hamtaBilar {
+    bilar {
+      marke
+      modell
+      ar
+    }
+  }
+`;
+
 const GET_USERS = gql`
   query GetUsers {
     getUsers {
@@ -48,7 +78,17 @@ const UPDATE_BOOK = gql`
   }
 `;
 
-export default function Home({ serverSideDataBooks, serverSideDataUsers }) {
+export default function Home({
+  serverSideDataBooks,
+  serverSideDataBocker,
+  serverSideDataBilar,
+  // serverSideDataUsers,
+  serverSideDataCars,
+}) {
+  console.log(
+    '🚀 ~ file: index.js ~ line 88 ~ serverSideDataCars',
+    serverSideDataCars
+  );
   // !Make multible client side query requests
   // const {
   //   loading: loadingBooks,
@@ -68,6 +108,35 @@ export default function Home({ serverSideDataBooks, serverSideDataUsers }) {
   const [inputTitle, setInputTitle] = useState('');
   const [inputName, setInputName] = useState('');
   const [inputAge, setInputAge] = useState('');
+  const [cars, setCars] = useState(null);
+
+  useEffect(() => {
+    // info Add a new document in collection "cities"
+    // const testGtefirebaseData = async () => {
+    //   try {
+    //     const docRef = await addDoc(collection(db, 'cars'), {
+    //       mark: 'mitsubishi',
+    //       yearMade: 34,
+    //     });
+    //     console.log('Document written with ID: ', docRef);
+    //   } catch (e) {
+    //     console.error('Error adding document: ', e);
+    //   }
+    // };
+    // testGtefirebaseData();
+    // info Below get cars from firestore
+    // const testing = async () => {
+    //   const querySnapshot = await getDocs(collection(db, 'cars'));
+    //   let temp = [];
+    //   querySnapshot.forEach((doc) => {
+    //     // doc.data() is never undefined for query doc snapshots
+    //     console.log(doc.id, ' => ', doc.data());
+    //     temp.push(doc.data());
+    //   });
+    //   console.log('temp', temp);
+    // };
+    // testing();
+  }, []);
 
   // const handleInputTitle = (event) => {
   //   event.preventDefault();
@@ -110,6 +179,26 @@ export default function Home({ serverSideDataBooks, serverSideDataUsers }) {
       </Head>
 
       <main>
+        {/* //info CARS */}
+        <h1 className="text-4xl">Cars</h1>
+        {serverSideDataCars?.map(({ mark, yearMade }, index) => {
+          return (
+            <div
+              key={index}
+              className="flex flex-col  p-20 bg-blue-100 border border-black mb-4 w-full "
+            >
+              <h3 className="text-blue-400 mb-4 text-lg font-bold flex-grow">
+                Car Mark: {mark}
+              </h3>
+
+              <div className="flex flex-col bg-white p-6 rounded-lg shadow-xl ">
+                <p className="text-gray-500">Year: {yearMade}</p>
+              </div>
+            </div>
+          );
+        })}
+        {/* //info END CARS */}
+        {/* //info Books */}
         <h2 className="text-2xl text-center mb-10">Books, hard coded values</h2>
         <form>
           <input
@@ -157,11 +246,13 @@ export default function Home({ serverSideDataBooks, serverSideDataUsers }) {
             </div>
           );
         })}
+        {/* //info END Books */}
+        {/*
         <h2 className="text-2xl text-center mb-10">
           Users, from placeholder api
         </h2>
 
-        {serverSideDataUsers?.getUsers.map(
+         {serverSideDataUsers?.getUsers.map(
           ({ name, email, username, company: { name: companyName } }) => {
             return (
               <div
@@ -180,7 +271,7 @@ export default function Home({ serverSideDataBooks, serverSideDataUsers }) {
               </div>
             );
           }
-        )}
+        )} */}
       </main>
 
       <footer className="flex items-center justify-center w-full h-24 border-t">
@@ -203,18 +294,25 @@ export async function getServerSideProps(context) {
   const serverSideDataBooks = await apolloClient.query({
     query: GET_BOOKS,
   });
-  const serverSideDataUsers = await apolloClient.query({
-    query: GET_USERS,
+  const serverSideDataBocker = await apolloClient.query({
+    query: HAMTA_BOCKER,
   });
-  console.log(
-    '🚀 ~ file: index.js ~ line 132 ~ getServerSideProps ~ serverSideDataBooks',
-    serverSideDataBooks
-  );
+
+  const serverSideDataBilar = await apolloClient.query({
+    query: HAMTA_BILAR,
+  });
+
+  const serverSideDataCars = await apolloClient.query({
+    query: GET_CARS,
+  });
 
   return {
     props: {
       serverSideDataBooks: serverSideDataBooks.data.books,
-      serverSideDataUsers: serverSideDataUsers.data,
+      serverSideDataBocker: serverSideDataBocker.data.bocker,
+      serverSideDataBilar: serverSideDataBilar.data.bilar,
+      serverSideDataCars: serverSideDataCars.data.cars,
+      // serverSideDataUsers: serverSideDataUsers.data,
     },
   };
 }
