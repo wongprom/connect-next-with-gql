@@ -161,6 +161,23 @@ export default function Home({
   const onSubmit = (data) => {
     console.log('🚀 ~ file: index.js ~ line 162 ~ onSubmit ~ data', data);
     console.log('Form is submitted');
+
+    const testGtefirebaseData = async () => {
+      try {
+        const docRef = await addDoc(collection(db, 'cars'), {
+          make: data.mark,
+          modell: data.modell,
+          color: data.color,
+          horsePower: Number(data.horsePower),
+          description: data.description,
+          yearMade: Number(data.year),
+        });
+        console.log('Document written with ID: ', docRef.id);
+      } catch (e) {
+        console.error('Error adding document: ', e);
+      }
+    };
+    testGtefirebaseData();
   };
 
   const handlerAddBook = (event) => {

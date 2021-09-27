@@ -59,7 +59,7 @@ const CarForm = () => {
               Horsepower:{' '}
             </label>
             <input
-              className={`p-2 border  ${errors.year ? 'bg-red-100' : ''}`}
+              className={`p-2 border  ${errors.horsePower ? 'bg-red-100' : ''}`}
               // defaultValue="year"
               type="number"
               {...register('horsePower')}
