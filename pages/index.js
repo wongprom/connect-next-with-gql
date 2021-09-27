@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { doc, setDoc } from 'firebase/firestore';
 import db from '../firebase';
 import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { useForm, FormProvider } from 'react-hook-form';
 
 import {
   ApolloClient,
@@ -13,6 +14,7 @@ import {
 } from '@apollo/client';
 import { initializeApollo } from '../lib/apolloClient';
 import { useEffect, useState } from 'react';
+import CarForm from '../components/CarForm';
 
 const GET_CARS = gql`
   query GetCars {
@@ -104,11 +106,12 @@ export default function Home({
   const [updateBook] = useMutation(UPDATE_BOOK);
 
   const [renderBooks, setRenderBooks] = useState(serverSideDataBooks);
+  const [cars, setCars] = useState(serverSideDataCars);
 
   const [inputTitle, setInputTitle] = useState('');
   const [inputName, setInputName] = useState('');
   const [inputAge, setInputAge] = useState('');
-  const [cars, setCars] = useState(null);
+  const methods = useForm();
 
   useEffect(() => {
     // info Add a new document in collection "cars"
@@ -155,6 +158,10 @@ export default function Home({
   //   event.preventDefault();
   //   setInputAge(event.target.value);
   // };
+  const onSubmit = (data) => {
+    console.log('🚀 ~ file: index.js ~ line 162 ~ onSubmit ~ data', data);
+    console.log('Form is submitted');
+  };
 
   const handlerAddBook = (event) => {
     event.preventDefault();
@@ -185,8 +192,23 @@ export default function Home({
 
       <main>
         {/* //info CARS */}
+        <div className=" mx-auto mt-4 px-8 max-w-screen-lg">
+          <FormProvider {...methods}>
+            <form className="" onSubmit={methods.handleSubmit(onSubmit)}>
+              <CarForm />
+
+              <div className="flex justify-end mt-6">
+                <input
+                  className="py-3 px-6 bg-blue-500 text-white"
+                  type="submit"
+                  value="Add Car"
+                />
+              </div>
+            </form>
+          </FormProvider>
+        </div>
         <h1 className="text-4xl">Cars</h1>
-        {serverSideDataCars?.map(
+        {cars?.map(
           (
             { make, modell, color, horsePower, description, yearMade },
             index
