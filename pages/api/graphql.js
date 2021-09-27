@@ -3,7 +3,15 @@ import axios from 'axios';
 // import { collection, query, where, getDocs } from 'firebase/firestore';
 import db from '../../firebase';
 
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  orderBy,
+  limit,
+} from 'firebase/firestore';
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -28,7 +36,11 @@ const typeDefs = gql`
     author: Person
   }
   type Car {
-    mark: String
+    make: String
+    modell: String
+    color: String
+    horsePower: Int
+    description: String
     yearMade: Int
   }
   type Person {
@@ -97,16 +109,16 @@ let bilar = [
     ar: 1998,
   },
 ];
-let cars = [
-  {
-    mark: 'Volvo',
-    yearMade: 1969,
-  },
-  {
-    mark: 'Saab',
-    yearMade: 1909,
-  },
-];
+// let cars = [
+//   {
+//     mark: 'Volvo',
+//     yearMade: 1969,
+//   },
+//   {
+//     mark: 'Saab',
+//     yearMade: 1909,
+//   },
+// ];
 
 let books = [
   {
@@ -138,14 +150,15 @@ const resolvers = {
     bilar: () => bilar,
     // cars: () => cars,
     cars: async () => {
-      const querySnapshot = await getDocs(collection(db, 'cars'));
+      const q = query(collection(db, 'cars'), orderBy('horsePower', 'asc'));
+      const querySnapshot = await getDocs(q);
       let temp = [];
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, ' => ', doc.data());
+        // console.log(doc.id, ' => ', doc.data());
         temp.push(doc.data());
       });
-      console.log('temp', temp);
+      // console.log('temp', temp);
       return temp;
     },
 

@@ -17,7 +17,11 @@ import { useEffect, useState } from 'react';
 const GET_CARS = gql`
   query GetCars {
     cars {
-      mark
+      make
+      modell
+      color
+      horsePower
+      description
       yearMade
     }
   }
@@ -85,10 +89,6 @@ export default function Home({
   // serverSideDataUsers,
   serverSideDataCars,
 }) {
-  console.log(
-    '🚀 ~ file: index.js ~ line 88 ~ serverSideDataCars',
-    serverSideDataCars
-  );
   // !Make multible client side query requests
   // const {
   //   loading: loadingBooks,
@@ -111,14 +111,19 @@ export default function Home({
   const [cars, setCars] = useState(null);
 
   useEffect(() => {
-    // info Add a new document in collection "cities"
+    // info Add a new document in collection "cars"
     // const testGtefirebaseData = async () => {
     //   try {
     //     const docRef = await addDoc(collection(db, 'cars'), {
-    //       mark: 'mitsubishi',
-    //       yearMade: 34,
+    //       make: 'Toyota',
+    //       modell: 'Supra',
+    //       color: 'Grön',
+    //       horsePower: 1000,
+    //       description:
+    //         'Bilen är byggd av Dynotech & Blenco Ab. Motor byggd och tål över 1000HK, Men nu mappad till 520hk på hjulen. Nedan kommer en lista på vad som är bytt och gjort med bilen. 2JZ-GTE, Boostline wiseco Vevstakar, Topplockspackning cooperring, Bosch Motorsport 1200cc spridare, Aeromotive regulator a1000, AN8 stålomspunna slangar hela vägen från tank till maskin, Extern K&N catchtank till vevhusventilation med AN10, Japspeed 13 raders Oljekyl kitt, Torque 50mm Alu kyl med 2x elkyl fläktar med polerad platta, Spec Steg 5 koppling Specad till 1232nm, 4" DP/MP med v band 3" catback och HKS Ljuddämpare, Precision Wastegate med screampipe, D2 bromsar fram med 356mm skivor och 8 kolvs ok, HKS Hipermax coilovers. ',
+    //       yearMade: 2017,
     //     });
-    //     console.log('Document written with ID: ', docRef);
+    //     console.log('Document written with ID: ', docRef.id);
     //   } catch (e) {
     //     console.error('Error adding document: ', e);
     //   }
@@ -181,22 +186,43 @@ export default function Home({
       <main>
         {/* //info CARS */}
         <h1 className="text-4xl">Cars</h1>
-        {serverSideDataCars?.map(({ mark, yearMade }, index) => {
-          return (
-            <div
-              key={index}
-              className="flex flex-col  p-20 bg-blue-100 border border-black mb-4 w-full "
-            >
-              <h3 className="text-blue-400 mb-4 text-lg font-bold flex-grow">
-                Car Mark: {mark}
-              </h3>
+        {serverSideDataCars?.map(
+          (
+            { make, modell, color, horsePower, description, yearMade },
+            index
+          ) => {
+            return (
+              <div
+                key={index}
+                className="flex flex-col  p-20 bg-blue-100 border border-black mb-4 w-full "
+              >
+                <h3 className="text-blue-400 mb-4 text-lg font-bold flex-grow">
+                  Car Mark: {make}
+                </h3>
 
-              <div className="flex flex-col bg-white p-6 rounded-lg shadow-xl ">
-                <p className="text-gray-500">Year: {yearMade}</p>
+                <div className="flex flex-col bg-white p-6 rounded-lg shadow-xl ">
+                  <p className="text-black">
+                    Modell: <span className="text-gray-500">{modell}</span>
+                  </p>
+                  <p className="text-black">
+                    Year:<span className="text-gray-500"> {yearMade}</span>
+                  </p>
+                  <p className="text-black">
+                    Color:<span className="text-gray-500"> {color}</span>
+                  </p>
+                  <p className="text-black">
+                    Horsepower:
+                    <span className="text-gray-500"> {horsePower}</span>
+                  </p>
+                  <p className="text-black">
+                    Description:
+                    <span className="text-gray-500"> {description}</span>
+                  </p>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          }
+        )}
         {/* //info END CARS */}
         {/* //info Books */}
         <h2 className="text-2xl text-center mb-10">Books, hard coded values</h2>
