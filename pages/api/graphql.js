@@ -36,6 +36,7 @@ const typeDefs = gql`
     author: Person
   }
   type Car {
+    id: ID
     make: String
     modell: String
     color: String
@@ -150,7 +151,7 @@ const resolvers = {
     bilar: () => bilar,
     // cars: () => cars,
     cars: async () => {
-      const q = query(collection(db, 'cars'), orderBy('horsePower', 'asc'));
+      const q = query(collection(db, 'cars'), orderBy('make', 'asc'));
       const querySnapshot = await getDocs(q);
       let temp = [];
       querySnapshot.forEach((doc) => {

@@ -3,6 +3,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import db from '../firebase';
 import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { useForm, FormProvider } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   ApolloClient,
@@ -19,6 +20,7 @@ import CarForm from '../components/CarForm';
 const GET_CARS = gql`
   query GetCars {
     cars {
+      id
       make
       modell
       color
@@ -165,6 +167,7 @@ export default function Home({
     const testGtefirebaseData = async () => {
       try {
         const docRef = await addDoc(collection(db, 'cars'), {
+          id: uuidv4(),
           make: data.mark,
           modell: data.modell,
           color: data.color,
@@ -227,12 +230,12 @@ export default function Home({
         <h1 className="text-4xl">Cars</h1>
         {cars?.map(
           (
-            { make, modell, color, horsePower, description, yearMade },
+            { make, modell, color, horsePower, description, yearMade, id },
             index
           ) => {
             return (
               <div
-                key={index}
+                key={id}
                 className="flex flex-col  p-20 bg-blue-100 border border-black mb-4 w-full "
               >
                 <h3 className="text-blue-400 mb-4 text-lg font-bold flex-grow">
