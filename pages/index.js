@@ -1,7 +1,5 @@
 import Head from 'next/head';
-import { doc, setDoc } from 'firebase/firestore';
-import db from '../firebase';
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+
 import { useForm, FormProvider } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -14,7 +12,7 @@ import {
   useMutation,
 } from '@apollo/client';
 import { initializeApollo } from '../lib/apolloClient';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import CarForm from '../components/CarForm';
 
 const GET_CARS = gql`
@@ -147,51 +145,6 @@ export default function Home({
   const [inputAge, setInputAge] = useState('');
   const methods = useForm();
 
-  useEffect(() => {
-    // info Add a new document in collection "cars"
-    // const testGtefirebaseData = async () => {
-    //   try {
-    //     const docRef = await addDoc(collection(db, 'cars'), {
-    //       make: 'Toyota',
-    //       modell: 'Supra',
-    //       color: 'Grön',
-    //       horsePower: 1000,
-    //       description:
-    //         'Bilen är byggd av Dynotech & Blenco Ab. Motor byggd och tål över 1000HK, Men nu mappad till 520hk på hjulen. Nedan kommer en lista på vad som är bytt och gjort med bilen. 2JZ-GTE, Boostline wiseco Vevstakar, Topplockspackning cooperring, Bosch Motorsport 1200cc spridare, Aeromotive regulator a1000, AN8 stålomspunna slangar hela vägen från tank till maskin, Extern K&N catchtank till vevhusventilation med AN10, Japspeed 13 raders Oljekyl kitt, Torque 50mm Alu kyl med 2x elkyl fläktar med polerad platta, Spec Steg 5 koppling Specad till 1232nm, 4" DP/MP med v band 3" catback och HKS Ljuddämpare, Precision Wastegate med screampipe, D2 bromsar fram med 356mm skivor och 8 kolvs ok, HKS Hipermax coilovers. ',
-    //       yearMade: 2017,
-    //     });
-    //     console.log('Document written with ID: ', docRef.id);
-    //   } catch (e) {
-    //     console.error('Error adding document: ', e);
-    //   }
-    // };
-    // testGtefirebaseData();
-    // info Below get cars from firestore
-    // const testing = async () => {
-    //   const querySnapshot = await getDocs(collection(db, 'cars'));
-    //   let temp = [];
-    //   querySnapshot.forEach((doc) => {
-    //     // doc.data() is never undefined for query doc snapshots
-    //     console.log(doc.id, ' => ', doc.data());
-    //     temp.push(doc.data());
-    //   });
-    //   console.log('temp', temp);
-    // };
-    // testing();
-  }, []);
-
-  // const handleInputTitle = (event) => {
-  //   event.preventDefault();
-  //   setInputTitle(event.target.value);
-  // };
-  // const handleInputName = (event) => {
-  //   event.preventDefault();
-  //   setInputName(event.target.value);
-  // };
-  // const handleInputAge = (event) => {
-  //   event.preventDefault();
-  //   setInputAge(event.target.value);
-  // };
   const onSubmit = (data) => {
     console.log('Form is submitted');
 
@@ -214,21 +167,8 @@ export default function Home({
           addCar
         );
 
-        // console.log(' ==> ', renderBooks);
-
         setRenderCars([...renderCars, addCar.addCar]);
       });
-
-      // const docRef = await addDoc(collection(db, 'cars'), {
-      //   id: uuidv4(),
-      //   make: data.mark,
-      //   modell: data.modell,
-      //   color: data.color,
-      //   horsePower: Number(data.horsePower),
-      //   description: data.description,
-      //   yearMade: Number(data.year),
-      // });
-      // console.log('ADD CAR CLIENT ==> Document written with ID: ', docRef);
     };
     testGtefirebaseData();
   };
