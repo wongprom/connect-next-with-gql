@@ -1,13 +1,11 @@
 import { ApolloServer, gql } from 'apollo-server-micro';
 import axios from 'axios';
-// import { collection, query, where, getDocs } from 'firebase/firestore';
 import db from '../../firebase';
 
 import {
   collection,
   addDoc,
   query,
-  where,
   getDocs,
   orderBy,
   limit,
@@ -118,16 +116,6 @@ let bilar = [
     ar: 1998,
   },
 ];
-// let cars = [
-//   {
-//     mark: 'Volvo',
-//     yearMade: 1969,
-//   },
-//   {
-//     mark: 'Saab',
-//     yearMade: 1909,
-//   },
-// ];
 
 let books = [
   {
@@ -157,7 +145,6 @@ const resolvers = {
     books: () => books,
     bocker: () => bocker,
     bilar: () => bilar,
-    // cars: () => cars,
     cars: async () => {
       const q = query(collection(db, 'cars'), orderBy('make', 'asc'));
       const querySnapshot = await getDocs(q);
@@ -167,7 +154,6 @@ const resolvers = {
         // console.log(doc.id, ' => ', doc.data());
         temp.push(doc.data());
       });
-      // console.log('temp', temp);
       return temp;
     },
 
@@ -186,15 +172,6 @@ const resolvers = {
     },
   },
   Mutation: {
-    // addCar: (_, { mark, yearMade }, { dataSources }) => {
-    //   const newCar = {
-    //     mark,
-    //     yearMade,
-    //   };
-    //   cars = [...cars, newCar];
-
-    //   return newCar;
-    // },
     addCar: async (
       _,
       { id, make, modell, color, horsePower, description, yearMade },
@@ -219,16 +196,9 @@ const resolvers = {
       } catch (e) {
         console.error(' ADD CAR Server ==> Error adding document: ', e);
       }
-      // cars = [...cars, newCar];
-
       return newCar;
     },
     addBook: (_, { title, name, age }, { dataSources }) => {
-      console.log(
-        '🚀 ~ file: graphql.js ~ line 219 ~ dataSources',
-        dataSources
-      );
-
       const newBook = {
         title,
         author: {
