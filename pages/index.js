@@ -74,6 +74,8 @@ const GET_USERS = gql`
   }
 `;
 
+// info Mutations
+
 const UPDATE_BOOK = gql`
   mutation AddBook($title: String, $name: String, $age: Int) {
     addBook(title: $title, name: $name, age: $age) {
@@ -82,6 +84,35 @@ const UPDATE_BOOK = gql`
         name
         age
       }
+    }
+  }
+`;
+const UPDATE_CAR = gql`
+  mutation AddCar(
+    $id: ID
+    $make: String
+    $modell: String
+    $color: String
+    $horsePower: Int
+    $description: String
+    $yearMade: Int
+  ) {
+    addCar(
+      id: $id
+      make: $make
+      modell: $modell
+      color: $color
+      horsePower: $horsePower
+      description: $description
+      yearMade: $yearMade
+    ) {
+      id
+      make
+      modell
+      color
+      horsePower
+      description
+      yearMade
     }
   }
 `;
@@ -106,9 +137,10 @@ export default function Home({
   //   data: dataUsers,
   // } = useQuery(GET_USERS);
   const [updateBook] = useMutation(UPDATE_BOOK);
+  const [updateCar] = useMutation(UPDATE_CAR);
 
   const [renderBooks, setRenderBooks] = useState(serverSideDataBooks);
-  const [cars, setCars] = useState(serverSideDataCars);
+  const [renderCars, setRenderCars] = useState(serverSideDataCars);
 
   const [inputTitle, setInputTitle] = useState('');
   const [inputName, setInputName] = useState('');
@@ -161,12 +193,13 @@ export default function Home({
   //   setInputAge(event.target.value);
   // };
   const onSubmit = (data) => {
-    console.log('🚀 ~ file: index.js ~ line 162 ~ onSubmit ~ data', data);
     console.log('Form is submitted');
 
-    const testGtefirebaseData = async () => {
-      try {
-        const docRef = await addDoc(collection(db, 'cars'), {
+    const testGtefirebaseData = () => {
+      console.log('🚀 ~ file: index.js ~ line 199~ onSubmit ~ data', data);
+
+      updateCar({
+        variables: {
           id: uuidv4(),
           make: data.mark,
           modell: data.modell,
@@ -174,11 +207,28 @@ export default function Home({
           horsePower: Number(data.horsePower),
           description: data.description,
           yearMade: Number(data.year),
-        });
-        console.log('Document written with ID: ', docRef.id);
-      } catch (e) {
-        console.error('Error adding document: ', e);
-      }
+        },
+      }).then(({ data: addCar }) => {
+        console.log(
+          '🚀 ~ file: index.js ~ line 212 ~ testGtefirebaseData ~ addCar',
+          addCar
+        );
+
+        // console.log(' ==> ', renderBooks);
+
+        setRenderCars([...renderCars, addCar.addCar]);
+      });
+
+      // const docRef = await addDoc(collection(db, 'cars'), {
+      //   id: uuidv4(),
+      //   make: data.mark,
+      //   modell: data.modell,
+      //   color: data.color,
+      //   horsePower: Number(data.horsePower),
+      //   description: data.description,
+      //   yearMade: Number(data.year),
+      // });
+      // console.log('ADD CAR CLIENT ==> Document written with ID: ', docRef);
     };
     testGtefirebaseData();
   };
@@ -193,7 +243,7 @@ export default function Home({
       },
     }).then(({ data: { addBook } }) => {
       console.log(
-        '🚀 ~ file: index.js ~ line 98 ~ handlerAddBook ~ addBook',
+        '🚀 ~ file: index.js ~ line 246 ~ handlerAddBook ~ addBook',
         addBook
       );
 
@@ -227,8 +277,8 @@ export default function Home({
             </form>
           </FormProvider>
         </div>
-        <h1 className="text-4xl">Cars</h1>
-        {cars?.map(
+        <h1 className="text-4xl">Cars from firebase</h1>
+        {renderCars?.map(
           (
             { make, modell, color, horsePower, description, yearMade, id },
             index

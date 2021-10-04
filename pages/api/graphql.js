@@ -89,7 +89,15 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    addCar(mark: String, yearMade: Int): Car
+    addCar(
+      id: ID
+      make: String
+      modell: String
+      color: String
+      horsePower: Int
+      description: String
+      yearMade: Int
+    ): Car
     addBook(title: String, name: String, age: Int): Book
   }
 `;
@@ -178,16 +186,49 @@ const resolvers = {
     },
   },
   Mutation: {
-    addCar: (_, { mark, yearMade }, { dataSources }) => {
+    // addCar: (_, { mark, yearMade }, { dataSources }) => {
+    //   const newCar = {
+    //     mark,
+    //     yearMade,
+    //   };
+    //   cars = [...cars, newCar];
+
+    //   return newCar;
+    // },
+    addCar: async (
+      _,
+      { id, make, modell, color, horsePower, description, yearMade },
+      { dataSources }
+    ) => {
+      console.log('dataSources >>>> ', dataSources);
       const newCar = {
-        mark,
+        id,
+        make,
+        modell,
+        color,
+        horsePower,
+        description,
         yearMade,
       };
-      cars = [...cars, newCar];
+
+      console.log('🚀 ~ file: graphql.js ~ line 197 ~ newCar', newCar);
+      try {
+        const docRef = await addDoc(collection(db, 'cars'), newCar);
+
+        console.log('ADD CAR SERVER ==> Document written with ID: ', docRef.id);
+      } catch (e) {
+        console.error(' ADD CAR Server ==> Error adding document: ', e);
+      }
+      // cars = [...cars, newCar];
 
       return newCar;
     },
     addBook: (_, { title, name, age }, { dataSources }) => {
+      console.log(
+        '🚀 ~ file: graphql.js ~ line 219 ~ dataSources',
+        dataSources
+      );
+
       const newBook = {
         title,
         author: {
