@@ -1,4 +1,4 @@
-import { useForm, FormProvider, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 const CarForm = () => {
   const title = 'Add car to firebase';
@@ -41,7 +41,6 @@ const CarForm = () => {
             </label>
             <input
               className={`p-2 border  ${errors.year ? 'bg-red-100' : ''}`}
-              // defaultValue="year"
               type="number"
               {...register(
                 'year',
@@ -60,7 +59,6 @@ const CarForm = () => {
             </label>
             <input
               className={`p-2 border  ${errors.horsePower ? 'bg-red-100' : ''}`}
-              // defaultValue="year"
               type="number"
               {...register('horsePower')}
             />
@@ -92,8 +90,6 @@ const CarForm = () => {
           </div>
         </div>
       </div>
-
-      {/* include validation with required or other standard HTML validation rules */}
     </div>
   );
 };
